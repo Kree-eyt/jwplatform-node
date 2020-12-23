@@ -31,10 +31,18 @@ class JWPlatformAPI {
             }
         });
     }
-    upload(videoOptions, filePath) {
+    upload(videoOptions, filePath, fileStream) {
         const videoData = Object.assign({}, videoOptions, {
             upload_method: 'single',
         });
+
+        let file;
+        if (fileStream) {
+            file = fileStream
+        } else {
+            file = fs.createReadStream(resolve(filePath))
+        }
+
         return this.videos.create(videoData).then(response => {
             const { path, protocol, address } = response.link;
             const uploadUrl = `${protocol}://${address}${path}`;
@@ -43,7 +51,7 @@ class JWPlatformAPI {
                 uri: uploadUrl,
                 json: true,
                 formData: {
-                    file: fs.createReadStream(resolve(filePath)),
+                    file: file,
                 },
                 qs: Object.assign({}, response.link.query, {
                     api_format: 'json',
