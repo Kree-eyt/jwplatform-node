@@ -4,3 +4,6 @@ node_modules
 #Testing
 coverage/
 .nyc_output
+
+# Editors
+.idea/
