@@ -1,7 +1,7 @@
 'use strict';
 
 // const rp = require('request-promise');
-const axios = require('axios'); 
+const axios = require('axios');
 const sha1 = require('js-sha1');
 const qs = require('qs');
 

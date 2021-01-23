@@ -7,6 +7,8 @@ const resources = require('./resources');
 const resolve = require('path').resolve;
 // const rp = require('request-promise');
 const axios = require('axios');
+const FormData = require('form-data');
+
 
 class JWPlatformAPI {
     constructor(opts = { timeout: 5000 }) {
@@ -41,21 +43,22 @@ class JWPlatformAPI {
         if (fileStream) {
             file = fileStream
         } else {
-            file = fs.createReadStream(resolve(filePath))
+            file = fs.createReadStream(resolve(filePath));
         }
 
         return this.videos.create(videoData).then(response => {
             const { path, protocol, address } = response.link;
             const uploadUrl = `${protocol}://${address}${path}`;
+            const form = new FormData();
 
-            return axios({
-                method: 'POST',
-                url: uploadUrl,
-                data: { file },
+            form.append('file', file);
+
+            return axios.post(uploadUrl, form, {
                 params: Object.assign({}, response.link.query, {
                     api_format: 'json',
                 }),
-            }).then(({ data }) => data);
+                headers: form.getHeaders(),
+            });
 
             // return rp({
             //     method: 'POST',
