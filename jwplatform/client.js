@@ -1,6 +1,7 @@
 'use strict';
 
-const rp = require('request-promise');
+// const rp = require('request-promise');
+const axios = require('axios'); 
 const sha1 = require('js-sha1');
 const qs = require('qs');
 
@@ -44,13 +45,20 @@ class Client {
     }
 
     _fetch(url, method, data) {
-        return rp({
+        return axios({
             method,
-            uri: `${this.baseUrl}${url}`,
+            data,
+            url: `${this.baseUrl}${url}`,
             headers: this.headers,
-            json: true,
-            body: data,
-        });
+        }).then(({ data }) => data);
+
+        // return rp({
+        //     method,
+        //     uri: `${this.baseUrl}${url}`,
+        //     headers: this.headers,
+        //     json: true,
+        //     body: data,
+        // });
     }
 
     _generateBaseQsParams() {
